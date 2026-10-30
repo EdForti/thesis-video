@@ -3,6 +3,7 @@
 
 Edit VIDEOS below (titles, descriptions), then run:  python3 build.py
 """
+import hashlib
 import html
 from pathlib import Path
 
@@ -45,6 +46,11 @@ footer{margin-top:32px;font-size:.85rem;border-top:1px solid var(--line);padding
 """
 
 
+def version(path):
+    """Short content hash, appended as ?v= so browsers re-download changed files."""
+    return hashlib.sha1(path.read_bytes()).hexdigest()[:8]
+
+
 def page(title, body, depth):
     up = "../" * depth
     return f"""<!doctype html>
@@ -67,15 +73,17 @@ def main():
     for v in VIDEOS:
         assert (root / "videos" / v["file"]).exists(), v["file"]
         stem = v["file"].rsplit(".", 1)[0]
+        src = f'../videos/{v["file"]}?v={version(root / "videos" / v["file"])}'
+        poster = f'../videos/{stem}.jpg?v={version(root / "videos" / (stem + ".jpg"))}'
         desc = f'<p class="desc">{html.escape(v["description"])}</p>' if v["description"] else ""
         body = f"""<header><p><a href="../">&larr; All videos</a></p>
 <h1>{html.escape(v["title"])}</h1></header>
-<video controls playsinline preload="metadata" poster="../videos/{stem}.jpg">
-  <source src="../videos/{v["file"]}" type="video/mp4">
-  <a href="../videos/{v["file"]}">Download the video</a>
+<video controls playsinline preload="metadata" poster="{poster}">
+  <source src="{src}" type="video/mp4">
+  <a href="{src}">Download the video</a>
 </video>
 {desc}
-<p><a href="../videos/{v["file"]}" download>Download MP4</a></p>"""
+<p><a href="{src}" download>Download MP4</a></p>"""
         d = root / v["slug"]
         d.mkdir(exist_ok=True)
         (d / "index.html").write_text(page(v["title"], body, 1))
