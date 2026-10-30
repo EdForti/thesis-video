@@ -95,12 +95,13 @@ def main():
 %   \usepackage{hyperref}
 \newcommand{\thesisvideobase}{BASE_URL}
 \definecolor{videoaccent}{RGB}{31,95,168}
+\definecolor{videobar}{gray}{0.55}
 % \thesisvideo{<slug>}{<title>}: framed box, text on the left, QR code on the right
 \newcommand{\thesisvideo}[2]{%
   \par\smallskip
   \begin{tcolorbox}[enhanced, width=0.78\linewidth, center,
       colback=black!5, colframe=black!15, boxrule=0.4pt, arc=2pt,
-      borderline west={2.5pt}{0pt}{videoaccent},
+      borderline west={2.5pt}{0pt}{videobar},
       left=10pt, right=8pt, top=6pt, bottom=6pt,
       sidebyside, sidebyside align=center, sidebyside gap=8pt,
       lefthand width=\dimexpr0.78\linewidth-2.9cm\relax, segmentation hidden]
